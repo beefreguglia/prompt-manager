@@ -1,22 +1,15 @@
-import "dotenv/config";
-import { defineConfig } from "prisma/config";
+import 'dotenv/config';
+import { defineConfig } from 'prisma/config';
+
+const url = process.env.DATABASE_URL!;
 
 export default defineConfig({
-  schema: "prisma/schema.prisma",
+  schema: 'prisma/schema.prisma',
   migrations: {
-    path: "prisma/migrations",
+    path: 'prisma/migrations',
   },
+  engine: 'classic',
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url,
   },
 });
-
-model Prompt {
-  id String @id @default(cuid())
-  title String
-  content String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("prompts")
-}
