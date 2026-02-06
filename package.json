@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "validate:typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "@prisma/client": "^6.19.2",
@@ -22,6 +23,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.2.4",
+    "lefthook": "^2.1.0",
     "prisma": "^6.19.2",
     "tailwindcss": "^4",
     "typescript": "^5"
