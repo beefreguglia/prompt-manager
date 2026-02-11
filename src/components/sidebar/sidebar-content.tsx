@@ -50,40 +50,40 @@ export function SidebarContent() {
       )}
 
       {!isCollapsed && (
-        <>
-          <section className="p-6">
-            <div className="mb-4 md:hidden">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="secondary"
-                  aria-label="Fechar Menu"
-                  title="Fechar menu"
-                >
-                  <CloseIcon className="h-5 w-5 text-gray-100" />
-                </Button>
-              </div>
-            </div>
-            <div className="mb-6 flex w-full items-center justify-between">
-              <header className="flex w-full items-center justify-between">
-                <Logo />
-                <Button
-                  onClick={collapseSidebar}
-                  className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
-                  variant="icon"
-                >
-                  <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
-                </Button>
-              </header>
-            </div>
-
-            <div>
-              <Button onClick={handleNewPrompt} className="w-full" size="lg">
-                <AddIcon className="mr-2 h-5 w-5 text-gray-100" />
-                Novo Prompt
+        <section className="p-6">
+          <div className="mb-4 md:hidden">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="secondary"
+                aria-label="Fechar Menu"
+                title="Fechar menu"
+              >
+                <CloseIcon className="h-5 w-5 text-gray-100" />
               </Button>
             </div>
-          </section>
-        </>
+          </div>
+          <div className="mb-6 flex w-full items-center justify-between">
+            <header className="flex w-full items-center justify-between">
+              <Logo />
+              <Button
+                onClick={collapseSidebar}
+                className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
+                variant="icon"
+                title="Minimizar sidebar"
+                aria-label="Minimizar sidebar"
+              >
+                <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
+              </Button>
+            </header>
+          </div>
+
+          <div>
+            <Button onClick={handleNewPrompt} className="w-full" size="lg">
+              <AddIcon className="mr-2 h-5 w-5" />
+              Novo prompt
+            </Button>
+          </div>
+        </section>
       )}
     </aside>
   );
