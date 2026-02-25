@@ -14,11 +14,13 @@ const config = createJestConfig({
     '/e2e/',
     '/src/components/ui/',
     '/src/lib/',
+    '<rootDir>/src/generated/prisma',
   ],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
     '<rootDir>/e2e/',
+    '<rootDir>/src/generated/prisma',
   ],
 });
 
