@@ -40,6 +40,18 @@ describe('Sidebar Content', () => {
         initialPrompts.length
       );
     });
+
+    it('should be able to update a search field while typing', async () => {
+      const text = 'AI';
+
+      makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+
+      await user.type(searchInput, text);
+
+      expect(searchInput).toHaveValue(text);
+    });
   });
 
   describe('Collapse / Expand', () => {
@@ -89,6 +101,27 @@ describe('Sidebar Content', () => {
       await user.click(newPromptButton);
 
       expect(pushMock).toHaveBeenCalledWith('/new');
+    });
+  });
+
+  describe('Search', () => {
+    it('should be able navigate using an encoded URL while typing and clearing the address bar', async () => {
+      const text = 'AI text';
+
+      makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+
+      await user.type(searchInput, text);
+
+      expect(pushMock).toHaveBeenCalled();
+      const lastCall = pushMock.mock.calls.at(-1);
+      expect(lastCall?.[0]).toBe('/?q=AI%20text');
+
+      await user.clear(searchInput);
+
+      const lastClearCall = pushMock.mock.calls.at(-1);
+      expect(lastClearCall?.[0]).toBe('/');
     });
   });
 });
