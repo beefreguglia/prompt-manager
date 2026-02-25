@@ -10,7 +10,7 @@
     "includes": [
       "src/**/*",
       "!src/generated/prisma/**/*",
-      "!jest.config.ts",
+      "jest.config.ts",
       "jest.setup.ts"
     ]
   },
