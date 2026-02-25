@@ -65,60 +65,75 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
               <ArrowRightToLine className="h-5 w-5 text-gray-100" />
             </Button>
           </header>
-        </section>
-      )}
-
-      {!isCollapsed && (
-        <section className="p-6">
-          <div className="mb-4 md:hidden">
-            <div className="flex items-center justify-between">
-              <Button
-                variant="secondary"
-                aria-label="Fechar Menu"
-                title="Fechar menu"
-              >
-                <CloseIcon className="h-5 w-5 text-gray-100" />
-              </Button>
-            </div>
-          </div>
-          <div className="mb-6 flex w-full items-center justify-between">
-            <header className="flex w-full items-center justify-between">
-              <Logo />
-              <Button
-                onClick={collapseSidebar}
-                className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
-                variant="icon"
-                title="Minimizar sidebar"
-                aria-label="Minimizar sidebar"
-              >
-                <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
-              </Button>
-            </header>
-          </div>
-
-          <section className="mb-5">
-            <form action="">
-              <Input
-                name="q"
-                type="text"
-                placeholder="Buscar prompts..."
-                onChange={handleQueryChange}
-                autoFocus
-                value={query}
-              />
-            </form>
-          </section>
-
-          <div>
-            <Button onClick={handleNewPrompt} className="w-full" size="lg">
-              <AddIcon className="mr-2 h-5 w-5" />
-              Novo prompt
+          <div className="items center flex flex-column space-y-4">
+            <Button
+              onClick={handleNewPrompt}
+              aria-label="Novo prompt"
+              title="Novo Prompt"
+            >
+              <AddIcon className="h-5 w-5 text-white" />
             </Button>
           </div>
         </section>
       )}
 
-      <PromptList prompts={prompts} />
+      {!isCollapsed && (
+        <>
+          <section className="p-6">
+            <div className="mb-4 md:hidden">
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="secondary"
+                  aria-label="Fechar Menu"
+                  title="Fechar menu"
+                >
+                  <CloseIcon className="h-5 w-5 text-gray-100" />
+                </Button>
+              </div>
+            </div>
+            <div className="mb-6 flex w-full items-center justify-between">
+              <header className="flex w-full items-center justify-between">
+                <Logo />
+                <Button
+                  onClick={collapseSidebar}
+                  className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
+                  variant="icon"
+                  title="Minimizar sidebar"
+                  aria-label="Minimizar sidebar"
+                >
+                  <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
+                </Button>
+              </header>
+            </div>
+
+            <section className="mb-5">
+              <form action="">
+                <Input
+                  name="q"
+                  type="text"
+                  placeholder="Buscar prompts..."
+                  onChange={handleQueryChange}
+                  autoFocus
+                  value={query}
+                />
+              </form>
+            </section>
+
+            <div>
+              <Button onClick={handleNewPrompt} className="w-full" size="lg">
+                <AddIcon className="mr-2 h-5 w-5" />
+                Novo prompt
+              </Button>
+            </div>
+          </section>
+          <nav
+            className="flex-1 overflow-auto px-6 pb-6"
+            aria-label="Lista de prompts"
+          >
+            <PromptList prompts={prompts} />
+          </nav>
+        </>
+      )}
     </aside>
   );
 }
