@@ -3,11 +3,13 @@ import { SidebarContent, type SidebarContentProps } from '@/components/sidebar';
 import { render, screen } from '@/lib/test-utils';
 
 const pushMock = jest.fn();
+let searchParamsMock = new URLSearchParams();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: pushMock,
   }),
+  useSearchParams: () => searchParamsMock,
 }));
 
 const initialPrompts = [
@@ -122,6 +124,16 @@ describe('Sidebar Content', () => {
 
       const lastClearCall = pushMock.mock.calls.at(-1);
       expect(lastClearCall?.[0]).toBe('/');
+    });
+
+    it('should be able to initialize search with a query string', () => {
+      const text = 'AI text';
+      const searchParams = new URLSearchParams(`q=${text}`);
+      searchParamsMock = searchParams;
+      makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+      expect(searchInput).toHaveValue(text);
     });
   });
 });
