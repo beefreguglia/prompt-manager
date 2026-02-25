@@ -7,7 +7,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**/*", "!src/generated/prisma/**/*"]
+    "includes": [
+      "**",
+      "!src/generated/prisma/**/*",
+      "!node_modules/**/*",
+      "!coverage/**/*"
+    ]
   },
   "formatter": {
     "enabled": true,
