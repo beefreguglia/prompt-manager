@@ -12,15 +12,11 @@ import { type ChangeEvent, startTransition, useState } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-type Prompt = {
-  id: string;
-  title: string;
-  content: string;
-};
+import type { PromptSummary } from '@/core/domain/prompts/prompt.entity';
+import { PromptList } from '../prompts';
 
 export type SidebarContentProps = {
-  prompts: Prompt[];
+  prompts: PromptSummary[];
 };
 
 export function SidebarContent({ prompts }: SidebarContentProps) {
@@ -122,9 +118,7 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
         </section>
       )}
 
-      {prompts.map((prompt) => (
-        <p key={prompt.id}>{prompt.title}</p>
-      ))}
+      <PromptList prompts={prompts} />
     </aside>
   );
 }
