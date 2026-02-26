@@ -30,6 +30,6 @@ export async function searchPromptAction(
 
     return { success: true, prompts: summaries };
   } catch (_error) {
-    return { success: false, message: 'Falha ao buscar prompts' };
+    return { success: false, message: 'Falha ao buscar prompts.' };
   }
 }
