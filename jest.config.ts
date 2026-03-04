@@ -21,7 +21,7 @@ const config = createJestConfig({
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
     '<rootDir>/e2e/',
-    '<rootDir>/src/generated/prisma',
+    '<rootDir>/src/generated/prisma/',
   ],
 });
 
