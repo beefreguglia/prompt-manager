@@ -45,15 +45,15 @@ describe('PrismaPromptRepository', () => {
       const input = [
         {
           id: '1',
-          title: 'Title 1',
-          content: 'Content 1',
+          title: 'Title 01',
+          content: 'Content 01',
           createdAt: now,
           updatedAt: now,
         },
         {
           id: '2',
-          title: 'Title 2',
-          content: 'Content 2',
+          title: 'Title 02',
+          content: 'Content 02',
           createdAt: now,
           updatedAt: now,
         },
@@ -75,15 +75,15 @@ describe('PrismaPromptRepository', () => {
       const input = [
         {
           id: '1',
-          title: 'Title 1',
-          content: 'Content 1',
+          title: 'Title 01',
+          content: 'Content 01',
           createdAt: now,
           updatedAt: now,
         },
       ];
       prisma.prompt.findMany.mockResolvedValue(input);
 
-      const results = await repository.searchMany('     ');
+      const results = await repository.searchMany('    ');
 
       expect(prisma.prompt.findMany).toHaveBeenCalledWith({
         where: undefined,
@@ -97,23 +97,45 @@ describe('PrismaPromptRepository', () => {
       const input = [
         {
           id: '1',
-          title: 'Title 1',
-          content: 'Content 1',
+          title: 'Title 01',
+          content: 'Content 01',
           createdAt: now,
           updatedAt: now,
         },
       ];
       prisma.prompt.findMany.mockResolvedValue(input);
 
-      const results = await repository.searchMany('  title 1  ');
+      const results = await repository.searchMany('  title 01  ');
 
       expect(prisma.prompt.findMany).toHaveBeenCalledWith({
         where: {
           OR: [
-            { title: { contains: 'title 1', mode: 'insensitive' } },
-            { content: { contains: 'title 1', mode: 'insensitive' } },
+            { title: { contains: 'title 01', mode: 'insensitive' } },
+            { content: { contains: 'title 01', mode: 'insensitive' } },
           ],
         },
+        orderBy: { createdAt: 'desc' },
+      });
+      expect(results).toMatchObject(input);
+    });
+
+    it('should be able to accept undefined term and dont send where', async () => {
+      const now = new Date();
+      const input = [
+        {
+          id: '1',
+          title: 'Title 01',
+          content: 'Content 01',
+          createdAt: now,
+          updatedAt: now,
+        },
+      ];
+      prisma.prompt.findMany.mockResolvedValue(input);
+
+      const results = await repository.searchMany(undefined);
+
+      expect(prisma.prompt.findMany).toHaveBeenCalledWith({
+        where: undefined,
         orderBy: { createdAt: 'desc' },
       });
       expect(results).toMatchObject(input);
