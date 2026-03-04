@@ -14,12 +14,14 @@ export class PrismaPromptRepository implements PromptRepository {
   }
 
   async searchMany(term?: string): Promise<Prompt[]> {
+    const q = term?.trim() ?? '';
+
     const prompts = await this.prisma.prompt.findMany({
-      where: term
+      where: q
         ? {
             OR: [
-              { title: { contains: term, mode: 'insensitive' } },
-              { content: { contains: term, mode: 'insensitive' } },
+              { title: { contains: q, mode: 'insensitive' } },
+              { content: { contains: q, mode: 'insensitive' } },
             ],
           }
         : undefined,
