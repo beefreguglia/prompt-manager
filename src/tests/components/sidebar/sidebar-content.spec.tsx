@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { SidebarContent, type SidebarContentProps } from '@/components/sidebar';
-import { render, screen } from '@/lib/test-utils';
+import { act, render, screen } from '@/lib/test-utils';
 
 const pushMock = jest.fn();
 let searchParamsMock = new URLSearchParams();
@@ -17,25 +17,32 @@ const initialPrompts = [
   { id: '2', title: 'Title 02', content: 'Content 02' },
 ];
 
-const makeSut = (
+const makeSut = async (
   { prompts = initialPrompts }: SidebarContentProps = {} as SidebarContentProps
 ) => {
-  return render(<SidebarContent prompts={prompts} />);
+  await act(async () => {
+    render(<SidebarContent prompts={prompts} />);
+  });
 };
 
 describe('Sidebar Content', () => {
   const user = userEvent.setup();
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    searchParamsMock = new URLSearchParams();
+  });
+
   describe('Base', () => {
-    it('should render a new prompt button', () => {
-      makeSut();
+    it('should render a new prompt button', async () => {
+      await makeSut();
 
       expect(screen.getByRole('complementary')).toBeVisible();
       expect(screen.getByRole('button', { name: 'Novo prompt' })).toBeVisible();
     });
 
-    it('should be able to render a prompts list', () => {
-      makeSut();
+    it('should be able to render a prompts list', async () => {
+      await makeSut();
 
       expect(screen.getByText(initialPrompts[0].title)).toBeInTheDocument();
       expect(screen.getAllByRole('paragraph')).toHaveLength(
@@ -45,11 +52,9 @@ describe('Sidebar Content', () => {
 
     it('should be able to update a search field while typing', async () => {
       const text = 'AI';
-
-      makeSut();
+      await makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
-
       await user.type(searchInput, text);
 
       expect(searchInput).toHaveValue(text);
@@ -57,8 +62,8 @@ describe('Sidebar Content', () => {
   });
 
   describe('Collapse / Expand', () => {
-    it('should be able to initialize expanded and show minimize button', () => {
-      makeSut();
+    it('should be able to initialize expanded and show minimize button', async () => {
+      await makeSut();
 
       const aside = screen.getByRole('complementary');
       expect(aside).toBeVisible();
@@ -74,13 +79,33 @@ describe('Sidebar Content', () => {
       expect(expandButton).not.toBeInTheDocument();
     });
 
-    it('should be able to colapse and show expand button', async () => {
-      makeSut();
+    it('should be able to expand by click in expand button', async () => {
+      await makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
       });
+      await user.click(collapseButton);
 
+      const expandButton = screen.getByRole('button', {
+        name: /expandir sidebar/i,
+      });
+      await user.click(expandButton);
+
+      expect(
+        screen.getByRole('button', { name: /minimizar sidebar/i })
+      ).toBeVisible();
+      expect(
+        screen.getByRole('navigation', { name: 'Lista de prompts' })
+      ).toBeVisible();
+    });
+
+    it('should be able to colapse and show expand button', async () => {
+      await makeSut();
+
+      const collapseButton = screen.getByRole('button', {
+        name: /minimizar sidebar/i,
+      });
       await user.click(collapseButton);
 
       const expandButton = screen.getByRole('button', {
@@ -92,12 +117,11 @@ describe('Sidebar Content', () => {
     });
 
     it('should be able to show add prompt button in collapsed sidebar', async () => {
-      makeSut();
+      await makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
       });
-
       await user.click(collapseButton);
 
       const newPromptButton = screen.getByRole('button', {
@@ -108,12 +132,11 @@ describe('Sidebar Content', () => {
     });
 
     it('should not be able to show prompt list in collapsed sidebar', async () => {
-      makeSut();
+      await makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
       });
-
       await user.click(collapseButton);
 
       const nav = screen.queryByRole('navigation', {
@@ -126,12 +149,11 @@ describe('Sidebar Content', () => {
 
   describe('New prompt', () => {
     it('should be able to navigate an user for a new prompt page', async () => {
-      makeSut();
+      await makeSut();
 
       const newPromptButton = screen.getByRole('button', {
         name: 'Novo prompt',
       });
-
       await user.click(newPromptButton);
 
       expect(pushMock).toHaveBeenCalledWith('/new');
@@ -140,29 +162,54 @@ describe('Sidebar Content', () => {
 
   describe('Search', () => {
     it('should be able navigate using an encoded URL while typing and clearing the address bar', async () => {
-      const text = 'AI text';
-
-      makeSut();
+      const text = 'A B';
+      await makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
-
       await user.type(searchInput, text);
 
       expect(pushMock).toHaveBeenCalled();
       const lastCall = pushMock.mock.calls.at(-1);
-      expect(lastCall?.[0]).toBe('/?q=AI%20text');
+      expect(lastCall?.[0]).toBe('/?q=A%20B');
 
       await user.clear(searchInput);
-
       const lastClearCall = pushMock.mock.calls.at(-1);
       expect(lastClearCall?.[0]).toBe('/');
     });
 
-    it('should be able to initialize search with a query string', () => {
-      const text = 'AI text';
-      const searchParams = new URLSearchParams(`q=${text}`);
-      searchParamsMock = searchParams;
-      makeSut();
+    it('should submit the form when typing in the search field', async () => {
+      const submitSpy = jest
+        .spyOn(HTMLFormElement.prototype, 'requestSubmit')
+        .mockImplementation(() => undefined);
+
+      await makeSut();
+
+      const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+      await user.type(searchInput, 'AI');
+
+      expect(submitSpy).toHaveBeenCalled();
+      submitSpy.mockRestore();
+    });
+
+    it('should automatically submit on mount when a query is present', async () => {
+      const submitSpy = jest
+        .spyOn(HTMLFormElement.prototype, 'requestSubmit')
+        .mockImplementation(() => undefined);
+
+      const text = 'text';
+      searchParamsMock = new URLSearchParams(`q=${text}`);
+
+      await makeSut();
+
+      expect(submitSpy).toHaveBeenCalled();
+      submitSpy.mockRestore();
+    });
+
+    it('should be able to initialize search with a query string', async () => {
+      const text = 'inicial';
+      searchParamsMock = new URLSearchParams(`q=${text}`);
+
+      await makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
       expect(searchInput).toHaveValue(text);

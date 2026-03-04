@@ -11,6 +11,7 @@ import {
   type ChangeEvent,
   startTransition,
   useActionState,
+  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -66,6 +67,14 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
       formRef.current?.requestSubmit();
     });
   }
+
+  useEffect(() => {
+    if (!hasQuery) {
+      return;
+    }
+
+    formRef.current?.requestSubmit();
+  }, [hasQuery]);
 
   return (
     <aside
