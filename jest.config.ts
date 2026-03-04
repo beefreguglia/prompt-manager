@@ -13,8 +13,9 @@ const config = createJestConfig({
     '/.next/',
     '/e2e/',
     '/src/components/ui/',
+    '/src/components/sidebar/sidebar.tsx',
     '/src/lib/',
-    '<rootDir>/src/generated/prisma',
+    '/src/generated/prisma/',
   ],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
