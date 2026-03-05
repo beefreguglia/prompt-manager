@@ -1,3 +1,4 @@
+import { unknown } from 'zod/v3';
 import {
   createPromptAction,
   searchPromptAction,
@@ -23,6 +24,7 @@ jest.mock('@/core/application/prompts/create-prompt.use-case', () => ({
 describe('Server Actions: Prompts', () => {
   beforeEach(() => {
     mockedSearchExecute.mockReset();
+    mockedCreateExecute.mockReset();
   });
 
   describe('searchPromptAction', () => {
@@ -136,6 +138,16 @@ describe('Server Actions: Prompts', () => {
 
       expect(result?.success).toBe(false);
       expect(result?.message).toBe('Este prompt já existe');
+    });
+
+    it('should be able to return a generic error when create action fails', async () => {
+      mockedCreateExecute.mockRejectedValue(unknown);
+      const data = { title: 'title', content: 'content' };
+
+      const result = await createPromptAction(data);
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Falha ao criar o prompt');
     });
   });
 });

@@ -1,8 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
+import { createPromptAction } from '@/app/actions/prompt.actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -13,6 +15,7 @@ import {
 } from '@/core/application/prompts/create-prompt.dto';
 
 export function PromptForm() {
+  const router = useRouter();
   const form = useForm<CreatePromptDTO>({
     resolver: zodResolver(createPromptSchema),
     defaultValues: {
@@ -21,9 +24,19 @@ export function PromptForm() {
     },
   });
 
+  async function submit(data: CreatePromptDTO) {
+    const result = await createPromptAction(data);
+
+    if (!result.success) {
+      return;
+    }
+
+    router.refresh();
+  }
+
   return (
     <Form {...form}>
-      <form className="space-y-6">
+      <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
         <header className="mb-6 flex flex-wrap items-center justify-end gap-2">
           <Button type="submit" size="sm">
             Salvar
