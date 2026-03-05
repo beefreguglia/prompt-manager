@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { createPromptAction } from '@/app/actions/prompt.actions';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,7 @@ export function PromptForm() {
       content: '',
     },
   });
-  const content = form.watch('content');
+  const content = useWatch({ control: form.control, name: 'content' });
 
   async function submit(data: CreatePromptDTO) {
     const result = await createPromptAction(data);
