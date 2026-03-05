@@ -13,6 +13,12 @@ export class PrismaPromptRepository implements PromptRepository {
     return prompts;
   }
 
+  async findByTitle(title: string): Promise<Prompt | null> {
+    const prompt = await this.prisma.prompt.find;
+
+    return null;
+  }
+
   async searchMany(term?: string): Promise<Prompt[]> {
     const q = term?.trim() ?? '';
 
