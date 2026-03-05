@@ -13,6 +13,7 @@ import {
   type CreatePromptDTO,
   createPromptSchema,
 } from '@/core/application/prompts/create-prompt.dto';
+import { CopyButton } from '../button-actions';
 
 export function PromptForm() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export function PromptForm() {
       content: '',
     },
   });
+  const content = form.watch('content');
 
   async function submit(data: CreatePromptDTO) {
     const result = await createPromptAction(data);
@@ -40,6 +42,7 @@ export function PromptForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)} className="space-y-6">
         <header className="mb-6 flex flex-wrap items-center justify-end gap-2">
+          <CopyButton content={content} />
           <Button type="submit" size="sm">
             Salvar
           </Button>
