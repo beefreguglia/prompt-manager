@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { createPromptAction } from '@/app/actions/prompt.actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
@@ -28,9 +28,11 @@ export function PromptForm() {
     const result = await createPromptAction(data);
 
     if (!result.success) {
+      toast.error(result.message);
       return;
     }
 
+    toast.success(result.message);
     router.refresh();
   }
 

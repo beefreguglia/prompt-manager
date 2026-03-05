@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { Sidebar } from '@/components/sidebar';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   variable: '--font-sans',
@@ -30,6 +31,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
