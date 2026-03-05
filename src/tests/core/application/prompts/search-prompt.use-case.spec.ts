@@ -1,3 +1,4 @@
+import type { CreatePromptDTO } from '@/core/application/prompts/create-prompt.dto';
 import { SearchPromptsUseCase } from '@/core/application/prompts/search-prompts.use-case';
 import type { Prompt } from '@/core/domain/prompts/prompt.entity';
 import type { PromptRepository } from '@/core/domain/prompts/prompt.repository';

@@ -3,25 +3,26 @@
 import { Check, Copy } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { Button } from '../ui/button';
 
-type CopyButtonProps = {
+export type CopyButtonProps = {
   content: string;
 };
 
-export function CopyButton({ content }: CopyButtonProps) {
+export const CopyButton = ({ content }: CopyButtonProps) => {
   const [isCopied, setIsCopied] = useState(false);
-  const isContentEmpty = !content.trim();
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
-  function clearTimer() {
+  const isContentEmpty = !content.trim();
+
+  const clearTimer = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-  }
+  };
 
-  async function handleCopy() {
+  const handleCopy = async () => {
     const text = content.trim();
 
     try {
@@ -29,13 +30,12 @@ export function CopyButton({ content }: CopyButtonProps) {
       setIsCopied(true);
 
       clearTimer();
-
       timerRef.current = setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
       const _error = error as Error;
-      toast.error(_error.message);
+      toast.error(`Erro ao copiar o texto: ${_error.message}`);
     }
-  }
+  };
 
   useEffect(() => {
     return () => {
@@ -55,9 +55,9 @@ export function CopyButton({ content }: CopyButtonProps) {
       {isCopied ? (
         <Check className="h-4 w-4 text-green-400" />
       ) : (
-        <Copy className="h-4 w-4" />
+        <Copy className="h- w-4" />
       )}
       <span>{isCopied ? 'Copiado' : 'Copiar'}</span>
     </Button>
   );
-}
+};
