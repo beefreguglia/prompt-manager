@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { SidebarContent, type SidebarContentProps } from '@/components/sidebar';
-import { act, render, screen, waitFor } from '@/lib/test-utils';
+import { render, screen, waitFor } from '@/lib/test-utils';
 
 const pushMock = jest.fn();
 let searchParamsMock = new URLSearchParams();
