@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { SidebarContent, type SidebarContentProps } from '@/components/sidebar';
-import { act, render, screen } from '@/lib/test-utils';
+import { act, render, screen, waitFor } from '@/lib/test-utils';
 
 const pushMock = jest.fn();
 let searchParamsMock = new URLSearchParams();
@@ -17,12 +17,10 @@ const initialPrompts = [
   { id: '2', title: 'Title 02', content: 'Content 02' },
 ];
 
-const makeSut = async (
+const makeSut = (
   { prompts = initialPrompts }: SidebarContentProps = {} as SidebarContentProps
 ) => {
-  await act(async () => {
-    render(<SidebarContent prompts={prompts} />);
-  });
+  return render(<SidebarContent prompts={prompts} />);
 };
 
 describe('Sidebar Content', () => {
@@ -206,13 +204,18 @@ describe('Sidebar Content', () => {
     });
 
     it('should be able to initialize search with a query string', async () => {
+      // const submitSpy = jest
+      //   .spyOn(HTMLFormElement.prototype, 'requestSubmit')
+      //   .mockImplementation(() => undefined);
+      // Forma de resolver problemas com server actions
       const text = 'inicial';
       searchParamsMock = new URLSearchParams(`q=${text}`);
 
-      await makeSut();
+      makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
-      expect(searchInput).toHaveValue(text);
+      await waitFor(() => expect(searchInput).toHaveValue(text));
+      // submitSpy.mockRestore();
     });
   });
 });
