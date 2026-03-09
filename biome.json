@@ -9,6 +9,7 @@
     "ignoreUnknown": false,
     "includes": [
       "src/**/*",
+      "e2e/**/*",
       "!src/generated/prisma/**/*",
       "jest.config.ts",
       "jest.setup.ts"

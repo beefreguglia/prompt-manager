@@ -16,7 +16,10 @@
     "validate:typecheck": "tsc --noEmit --skipLibCheck",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:trace": "playwright test --trace on",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -39,6 +42,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
     "@faker-js/faker": "^10.3.0",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
