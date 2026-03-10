@@ -21,7 +21,7 @@ export class PrismaPromptRepository implements PromptRepository {
   }
 
   async findById(id: string): Promise<Prompt | null> {
-    const prompt = await this.prisma.prompt.findFirst({ where: { id } });
+    const prompt = await this.prisma.prompt.findUnique({ where: { id } });
 
     return prompt;
   }
