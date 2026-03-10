@@ -87,13 +87,14 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
               title="Expandir sidebar"
               aria-label="Expandir sidebar"
               variant="icon"
-              className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
+              size="icon"
+              className="hidden rounded-lg transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
               onClick={expandSidebar}
             >
               <ArrowRightToLine className="h-5 w-5 text-gray-100" />
             </Button>
           </header>
-          <div className="items center flex flex-column space-y-4">
+          <div className="flex flex-column items-center justify-center space-y-4">
             <Button
               onClick={handleNewPrompt}
               aria-label="Novo prompt"

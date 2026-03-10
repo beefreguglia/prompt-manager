@@ -39,13 +39,13 @@ function makeSut({ prompt }: PromptCardProps) {
 
 describe('PromptCard', () => {
   const user = userEvent.setup();
+  const prompt = {
+    id: '1',
+    title: 'title 1',
+    content: 'content 1',
+  };
 
   it('should be able render link with href correctly', () => {
-    const prompt = {
-      id: '1',
-      title: 'title 1',
-      content: 'content 1',
-    };
     makeSut({ prompt });
 
     const link = screen.getByRole('link');
@@ -55,16 +55,20 @@ describe('PromptCard', () => {
   });
 
   it('should be able to redirect user by click on card', async () => {
-    const prompt = {
-      id: '1',
-      title: 'title 1',
-      content: 'content 1',
-    };
     makeSut({ prompt });
 
     const link = screen.getByRole('link');
     await user.click(link);
 
     expect(pushMock).toHaveBeenCalledWith(`/${prompt.id}`);
+  });
+
+  it('should be able open a remove prompt confirmation', async () => {
+    makeSut({ prompt });
+
+    const deleteButton = screen.getByRole('button');
+    await user.click(deleteButton);
+
+    expect(screen.getByText('Remover Prompt')).toBeInTheDocument();
   });
 });

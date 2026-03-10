@@ -1,4 +1,21 @@
+'use client';
+
+import { Trash as DeleteIcon, Loader2 as LoadingIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import type { PromptSummary } from '@/core/domain/prompts/prompt.entity';
 
 export type PromptCardProps = {
@@ -6,6 +23,12 @@ export type PromptCardProps = {
 };
 
 export function PromptCard({ prompt }: PromptCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleDelete() {
+    setIsDeleting(true);
+  }
+
   return (
     <li className="group relative rounded-lg bg-gray-700 p-3 transition-all duration-200">
       <header className="flex items-start justify-between">
@@ -17,6 +40,37 @@ export function PromptCard({ prompt }: PromptCardProps) {
             {prompt.content}
           </p>
         </Link>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="icon"
+              size="icon"
+              title="Remover Prompt"
+              aria-label="Remover Prompt"
+              onClick={() => setIsDeleting(true)}
+            >
+              <DeleteIcon className="h-3 w-3" />
+            </Button>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remover Prompt</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja remover este prompt? Esta ação não pode
+                ser desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                {isDeleting && (
+                  <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </header>
     </li>
   );
