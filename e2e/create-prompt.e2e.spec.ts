@@ -33,8 +33,8 @@ test('Title duplicate validation', async ({ page }: { page: Page }) => {
   await prisma.prompt.create({ data: { title: duplicateTitle, content } });
 
   await page.goto('/new');
-  await expect(page.getByPlaceholder('Título do prompt')).toBeVisible();
   const titleInput = page.getByPlaceholder('Título do prompt');
+  await expect(titleInput).toBeVisible();
   await titleInput.click();
   await titleInput.fill(duplicateTitle);
   await page.fill('textarea[name="content"]', content);
