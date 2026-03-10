@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
-
+import { toast } from 'sonner';
 import {
   PromptCard,
   type PromptCardProps,
@@ -31,6 +31,10 @@ jest.mock('next/link', () => ({
       {children}
     </a>
   ),
+}));
+
+jest.mock('sonner', () => ({
+  toast: { success: jest.fn(), error: jest.fn() },
 }));
 
 function makeSut({ prompt }: PromptCardProps) {
@@ -70,5 +74,16 @@ describe('PromptCard', () => {
     await user.click(deleteButton);
 
     expect(screen.getByText('Remover Prompt')).toBeInTheDocument();
+  });
+
+  it('should be able to remove with success and show a success toast', async () => {
+    makeSut({ prompt });
+
+    const deleteButton = screen.getByRole('button', { name: 'Remover Prompt' });
+    await user.click(deleteButton);
+
+    await user.click(screen.getByRole('button', { name: 'Confirmar remoção' }));
+
+    expect(toast.success).toHaveBeenCalledWith('Prompt removido com sucesso');
   });
 });

@@ -3,7 +3,7 @@
 import { Trash as DeleteIcon, Loader2 as LoadingIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +26,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleDelete() {
-    setIsDeleting(true);
+    toast.success('Prompt removido com sucesso');
   }
 
   return (
@@ -47,7 +47,6 @@ export function PromptCard({ prompt }: PromptCardProps) {
               size="icon"
               title="Remover Prompt"
               aria-label="Remover Prompt"
-              onClick={() => setIsDeleting(true)}
             >
               <DeleteIcon className="h-3 w-3" />
             </Button>
@@ -67,6 +66,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
                 {isDeleting && (
                   <LoadingIcon className="mr-2 h-4 w-4 animate-spin" />
                 )}
+                Confirmar remoção
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
