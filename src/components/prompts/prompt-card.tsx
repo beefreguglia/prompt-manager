@@ -1,10 +1,12 @@
 'use client';
 
 import { Trash as DeleteIcon, Loader2 as LoadingIcon } from 'lucide-react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
 import { deletePromptAction } from '@/app/actions/prompt.actions';
 import {
   AlertDialog,
@@ -49,7 +51,17 @@ export function PromptCard({ prompt }: PromptCardProps) {
   }
 
   return (
-    <li className="group relative rounded-lg bg-gray-700 p-3 transition-all duration-200">
+    <motion.li
+      className="group relative rounded-lg p-3 transition-all duration-200 hover:bg-gray-700"
+      aria-label={prompt.title}
+      initial={{ opacity: 1, height: 'auto' }}
+      exit={{
+        opacity: 0,
+        height: 0,
+        marginBottom: 0,
+        transition: { duration: 0.3, ease: 'easeInOut' },
+      }}
+    >
       <header className="flex items-start justify-between">
         <Link href={`/${prompt.id}`} prefetch className="min-w-0 flex-1">
           <h3 className="font-medium text-sm text-white transition-colors group-hover:text-accent-300">
@@ -91,6 +103,6 @@ export function PromptCard({ prompt }: PromptCardProps) {
           </AlertDialogContent>
         </AlertDialog>
       </header>
-    </li>
+    </motion.li>
   );
 }

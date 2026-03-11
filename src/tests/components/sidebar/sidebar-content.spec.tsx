@@ -33,14 +33,14 @@ describe('Sidebar Content', () => {
 
   describe('Base', () => {
     it('should render a new prompt button', async () => {
-      await makeSut();
+      makeSut();
 
       expect(screen.getByRole('complementary')).toBeVisible();
       expect(screen.getByRole('button', { name: 'Novo prompt' })).toBeVisible();
     });
 
     it('should be able to render a prompts list', async () => {
-      await makeSut();
+      makeSut();
 
       expect(screen.getByText(initialPrompts[0].title)).toBeInTheDocument();
       expect(screen.getAllByRole('paragraph')).toHaveLength(
@@ -50,7 +50,7 @@ describe('Sidebar Content', () => {
 
     it('should be able to update a search field while typing', async () => {
       const text = 'AI';
-      await makeSut();
+      makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
       await user.type(searchInput, text);
@@ -68,19 +68,17 @@ describe('Sidebar Content', () => {
 
       const openButton = screen.getByRole('button', { name: 'Abrir menu' });
       await user.click(openButton);
-
       expect(aside.className).toContain('translate-x-0');
 
       const closeButton = screen.getByRole('button', { name: 'Fechar menu' });
       await user.click(closeButton);
-
       expect(aside.className).toContain('-translate-x-full');
     });
   });
 
   describe('Collapse / Expand', () => {
     it('should be able to initialize expanded and show minimize button', async () => {
-      await makeSut();
+      makeSut();
 
       const aside = screen.getByRole('complementary');
       expect(aside).toBeVisible();
@@ -97,7 +95,7 @@ describe('Sidebar Content', () => {
     });
 
     it('should be able to expand by click in expand button', async () => {
-      await makeSut();
+      makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
@@ -118,7 +116,7 @@ describe('Sidebar Content', () => {
     });
 
     it('should be able to colapse and show expand button', async () => {
-      await makeSut();
+      makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
@@ -134,7 +132,7 @@ describe('Sidebar Content', () => {
     });
 
     it('should be able to show add prompt button in collapsed sidebar', async () => {
-      await makeSut();
+      makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
@@ -149,7 +147,7 @@ describe('Sidebar Content', () => {
     });
 
     it('should not be able to show prompt list in collapsed sidebar', async () => {
-      await makeSut();
+      makeSut();
 
       const collapseButton = screen.getByRole('button', {
         name: /minimizar sidebar/i,
@@ -166,7 +164,7 @@ describe('Sidebar Content', () => {
 
   describe('New prompt', () => {
     it('should be able to navigate an user for a new prompt page', async () => {
-      await makeSut();
+      makeSut();
 
       const newPromptButton = screen.getByRole('button', {
         name: 'Novo prompt',
@@ -199,7 +197,7 @@ describe('Sidebar Content', () => {
         .spyOn(HTMLFormElement.prototype, 'requestSubmit')
         .mockImplementation(() => undefined);
 
-      await makeSut();
+      makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
       await user.type(searchInput, 'AI');
@@ -216,7 +214,7 @@ describe('Sidebar Content', () => {
       const text = 'text';
       searchParamsMock = new URLSearchParams(`q=${text}`);
 
-      await makeSut();
+      makeSut();
 
       expect(submitSpy).toHaveBeenCalled();
       submitSpy.mockRestore();
