@@ -1,6 +1,11 @@
 import { PromptList, type PromptListProps } from '@/components/prompts';
 import { render, screen } from '@/lib/test-utils';
 
+const refreshMock = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: refreshMock }),
+}));
+
 function makeSut({ prompts }: PromptListProps) {
   return render(<PromptList prompts={prompts} />);
 }

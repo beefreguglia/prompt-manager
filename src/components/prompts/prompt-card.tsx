@@ -2,6 +2,7 @@
 
 import { Trash as DeleteIcon, Loader2 as LoadingIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { deletePromptAction } from '@/app/actions/prompt.actions';
@@ -25,6 +26,7 @@ export type PromptCardProps = {
 
 export function PromptCard({ prompt }: PromptCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   async function handleDelete() {
     setIsDeleting(true);
@@ -37,6 +39,7 @@ export function PromptCard({ prompt }: PromptCardProps) {
       }
 
       toast.success(result.message);
+      router.refresh();
     } catch (error) {
       const _error = error as Error;
       toast.error(_error.message);

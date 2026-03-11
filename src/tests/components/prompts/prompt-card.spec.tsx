@@ -42,6 +42,11 @@ jest.mock('sonner', () => ({
   toast: { success: jest.fn(), error: jest.fn() },
 }));
 
+const refreshMock = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: refreshMock }),
+}));
+
 function makeSut({ prompt }: PromptCardProps) {
   return render(<PromptCard prompt={prompt} />);
 }
@@ -53,6 +58,14 @@ describe('PromptCard', () => {
     title: 'title 1',
     content: 'content 1',
   };
+
+  beforeEach(() => {
+    deleteMock.mockReset();
+    pushMock.mockReset();
+    refreshMock.mockReset();
+    (toast.success as jest.Mock).mockReset();
+    (toast.error as jest.Mock).mockReset();
+  });
 
   it('should be able render link with href correctly', () => {
     makeSut({ prompt });
@@ -94,6 +107,7 @@ describe('PromptCard', () => {
     await user.click(screen.getByRole('button', { name: 'Confirmar remoção' }));
 
     expect(toast.success).toHaveBeenCalledWith('Prompt removido com sucesso');
+    expect(refreshMock).toHaveBeenCalledTimes(1);
   });
 
   it('should be able to show error when action fails', async () => {
