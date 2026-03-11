@@ -59,6 +59,25 @@ describe('Sidebar Content', () => {
     });
   });
 
+  describe('SidebarContentMobile', () => {
+    it('should be able to open and close mobile menu', async () => {
+      makeSut();
+
+      const aside = screen.getByRole('complementary');
+      expect(aside.className).toContain('-translate-x-full');
+
+      const openButton = screen.getByRole('button', { name: 'Abrir menu' });
+      await user.click(openButton);
+
+      expect(aside.className).toContain('translate-x-0');
+
+      const closeButton = screen.getByRole('button', { name: 'Fechar menu' });
+      await user.click(closeButton);
+
+      expect(aside.className).toContain('-translate-x-full');
+    });
+  });
+
   describe('Collapse / Expand', () => {
     it('should be able to initialize expanded and show minimize button', async () => {
       await makeSut();
@@ -161,7 +180,7 @@ describe('Sidebar Content', () => {
   describe('Search', () => {
     it('should be able navigate using an encoded URL while typing and clearing the address bar', async () => {
       const text = 'A B';
-      await makeSut();
+      makeSut();
 
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
       await user.type(searchInput, text);

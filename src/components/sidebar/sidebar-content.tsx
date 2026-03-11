@@ -5,6 +5,7 @@ import {
   ArrowLeftToLine,
   ArrowRightToLine,
   X as CloseIcon,
+  Menu,
 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -40,6 +41,7 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
   );
 
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
 
   const hasQuery = query.trim().length > 0;
@@ -68,6 +70,14 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
     });
   }
 
+  function openMobile() {
+    return setIsMobileOpen(true);
+  }
+
+  function closeMobile() {
+    return setIsMobileOpen(false);
+  }
+
   useEffect(() => {
     if (!hasQuery) {
       return;
@@ -77,104 +87,117 @@ export function SidebarContent({ prompts }: SidebarContentProps) {
   }, [hasQuery]);
 
   return (
-    <aside
-      className={`fixed top-0 left-0 z-50 flex h-full w-[80vw] flex-col border-gray-700 border-r bg-gray-800 transition-[transform,width] duration-300 ease-in-out sm:w-[320px] md:relative md:z-auto ${isCollapsed ? 'md:w-18' : 'md:[w-384px]'}`}
-    >
-      {isCollapsed && (
-        <section className="px-2 py-6">
-          <header className="mb-6 flex items-center justify-center">
-            <Button
-              title="Expandir sidebar"
-              aria-label="Expandir sidebar"
-              variant="icon"
-              size="icon"
-              className="hidden rounded-lg transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
-              onClick={expandSidebar}
-            >
-              <ArrowRightToLine className="h-5 w-5 text-gray-100" />
-            </Button>
-          </header>
-          <div className="flex flex-column items-center justify-center space-y-4">
-            <Button
-              onClick={handleNewPrompt}
-              aria-label="Novo prompt"
-              title="Novo Prompt"
-            >
-              <AddIcon className="h-5 w-5 text-white" />
-            </Button>
-          </div>
-        </section>
-      )}
-
-      {!isCollapsed && (
-        <>
-          <section className="p-6">
-            <div className="mb-4 md:hidden">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="secondary"
-                  aria-label="Fechar Menu"
-                  title="Fechar menu"
-                >
-                  <CloseIcon className="h-5 w-5 text-gray-100" />
-                </Button>
-              </div>
-            </div>
-            <div className="mb-6 flex w-full items-center justify-between">
-              <header className="flex w-full items-center justify-between">
-                <Logo />
-                <Button
-                  onClick={collapseSidebar}
-                  className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
-                  variant="icon"
-                  title="Minimizar sidebar"
-                  aria-label="Minimizar sidebar"
-                >
-                  <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
-                </Button>
-              </header>
-            </div>
-
-            <section className="mb-5">
-              <form
-                ref={formRef}
-                action={searchAction}
-                className="group relative w-full"
+    <>
+      <Button
+        className="fixed top-6 left-6 z-50 md:hidden"
+        variant="secondary"
+        title="Abrir menu"
+        aria-label="Abrir menu"
+        aria-expanded={isMobileOpen}
+        onClick={openMobile}
+      >
+        <Menu className="h-5 w-5 text-gray-100" />
+      </Button>
+      <aside
+        className={`fixed top-0 left-0 z-50 flex h-full w-[80vw] flex-col border-gray-700 border-r bg-gray-800 transition-[transform,width] duration-300 ease-in-out sm:w-[320px] md:relative md:z-auto ${isCollapsed ? 'md:w-18' : 'md:[w-384px]'} ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+      >
+        {isCollapsed && (
+          <section className="px-2 py-6">
+            <header className="mb-6 flex items-center justify-center">
+              <Button
+                title="Expandir sidebar"
+                aria-label="Expandir sidebar"
+                variant="icon"
+                size="icon"
+                className="hidden rounded-lg transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
+                onClick={expandSidebar}
               >
-                <Input
-                  name="q"
-                  type="text"
-                  placeholder="Buscar prompts..."
-                  onChange={handleQueryChange}
-                  autoFocus
-                  value={query}
-                />
-                {isPending && (
-                  <div
-                    title="Carregando prompts"
-                    className="-translate-y-1/2 absolute top-1/2 right-2 flex items-center gap-2 text-gray-300"
-                  >
-                    <Spinner aria-label="Carregando prompts" />
-                  </div>
-                )}
-              </form>
-            </section>
-
-            <div>
-              <Button onClick={handleNewPrompt} className="w-full" size="lg">
-                <AddIcon className="mr-2 h-5 w-5" />
-                Novo prompt
+                <ArrowRightToLine className="h-5 w-5 text-gray-100" />
+              </Button>
+            </header>
+            <div className="flex flex-column items-center justify-center space-y-4">
+              <Button
+                onClick={handleNewPrompt}
+                aria-label="Novo prompt"
+                title="Novo Prompt"
+              >
+                <AddIcon className="h-5 w-5 text-white" />
               </Button>
             </div>
           </section>
-          <nav
-            className="flex-1 overflow-auto px-6 pb-6"
-            aria-label="Lista de prompts"
-          >
-            <PromptList prompts={promptList} />
-          </nav>
-        </>
-      )}
-    </aside>
+        )}
+
+        {!isCollapsed && (
+          <>
+            <section className="max-h-dvh p-6">
+              <div className="mb-4 md:hidden">
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="secondary"
+                    aria-label="Fechar Menu"
+                    title="Fechar menu"
+                    onClick={closeMobile}
+                  >
+                    <CloseIcon className="h-5 w-5 text-gray-100" />
+                  </Button>
+                </div>
+              </div>
+              <div className="mb-6 flex w-full items-center justify-between">
+                <header className="flex w-full items-center justify-between">
+                  <Logo />
+                  <Button
+                    onClick={collapseSidebar}
+                    className="hidden rounded-lg p-2 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-accent-500 md:inline-flex"
+                    variant="icon"
+                    title="Minimizar sidebar"
+                    aria-label="Minimizar sidebar"
+                  >
+                    <ArrowLeftToLine className="h-5 w-5 text-gray-100" />
+                  </Button>
+                </header>
+              </div>
+
+              <section className="mb-5">
+                <form
+                  ref={formRef}
+                  action={searchAction}
+                  className="group relative w-full"
+                >
+                  <Input
+                    name="q"
+                    type="text"
+                    placeholder="Buscar prompts..."
+                    onChange={handleQueryChange}
+                    autoFocus
+                    value={query}
+                  />
+                  {isPending && (
+                    <div
+                      title="Carregando prompts"
+                      className="-translate-y-1/2 absolute top-1/2 right-2 flex items-center gap-2 text-gray-300"
+                    >
+                      <Spinner aria-label="Carregando prompts" />
+                    </div>
+                  )}
+                </form>
+              </section>
+
+              <div>
+                <Button onClick={handleNewPrompt} className="w-full" size="lg">
+                  <AddIcon className="mr-2 h-5 w-5" />
+                  Novo prompt
+                </Button>
+              </div>
+            </section>
+            <nav
+              className="flex-1 overflow-auto px-6 pb-6"
+              aria-label="Lista de prompts"
+            >
+              <PromptList prompts={promptList} />
+            </nav>
+          </>
+        )}
+      </aside>
+    </>
   );
 }
