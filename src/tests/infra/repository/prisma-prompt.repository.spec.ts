@@ -8,9 +8,6 @@ type PromptDelegateMock = {
   create: jest.MockedFunction<
     (args: { data: CreatePromptDTO }) => Promise<void>
   >;
-  update: jest.MockedFunction<
-    (args: { where: { id: string }; data: UpdatePromptDTO }) => Promise<Prompt>
-  >;
   findUnique: jest.MockedFunction<
     (args: { where: { id: string } }) => Promise<Prompt | null>
   >;
@@ -30,6 +27,16 @@ type PromptDelegateMock = {
       };
     }) => Promise<Prompt[]>
   >;
+  update: jest.MockedFunction<
+    (args: { where: { id: string }; data: UpdatePromptDTO }) => Promise<Prompt>
+  >;
+  delete: jest.MockedFunction<
+    (args: {
+      where: {
+        id: string;
+      };
+    }) => Promise<void>
+  >;
 };
 
 type PrismaMock = {
@@ -40,10 +47,11 @@ function createMockPrisma() {
   const mock: PrismaMock = {
     prompt: {
       create: jest.fn(),
-      update: jest.fn(),
       findUnique: jest.fn(),
       findFirst: jest.fn(),
       findMany: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     },
   };
 
@@ -69,82 +77,6 @@ describe('PrismaPromptRepository', () => {
       await repository.create(input);
 
       expect(prisma.prompt.create).toHaveBeenCalledWith({ data: input });
-    });
-  });
-
-  describe('update', () => {
-    it('should be able to update and return updated prompt', async () => {
-      const now = new Date();
-      const input = {
-        id: '1',
-        title: 'New title',
-        content: 'New content',
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      prisma.prompt.update.mockResolvedValue(input);
-
-      const result = await repository.update(input.id, {
-        title: input.title,
-        content: input.content,
-      });
-
-      expect(prisma.prompt.update).toHaveBeenCalledWith({
-        where: {
-          id: input.id,
-        },
-        data: {
-          title: input.title,
-          content: input.content,
-        },
-      });
-
-      expect(result).toEqual(input);
-    });
-
-    it('should be able to update only with new title', async () => {
-      const now = new Date();
-      const input = {
-        id: '1',
-        title: 'New title',
-        content: '',
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      prisma.prompt.update.mockResolvedValue(input);
-
-      await repository.update(input.id, {
-        title: input.title,
-      });
-      const call = prisma.prompt.update.mock.calls[0][0];
-
-      expect(call.where).toEqual({ id: input.id });
-      expect(call.data).toEqual({ title: input.title });
-      expect('content' in call.data).toBe(false);
-    });
-
-    it('should be able to update only with new content', async () => {
-      const now = new Date();
-      const input = {
-        id: '1',
-        title: '',
-        content: 'New content',
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      prisma.prompt.update.mockResolvedValue(input);
-
-      await repository.update(input.id, {
-        content: input.content,
-      });
-      const call = prisma.prompt.update.mock.calls[0][0];
-
-      expect(call.where).toEqual({ id: input.id });
-      expect(call.data).toEqual({ content: input.content });
-      expect('title' in call.data).toBe(false);
     });
   });
 
@@ -302,6 +234,93 @@ describe('PrismaPromptRepository', () => {
         orderBy: { createdAt: 'desc' },
       });
       expect(results).toMatchObject(input);
+    });
+  });
+
+  describe('update', () => {
+    it('should be able to update and return updated prompt', async () => {
+      const now = new Date();
+      const input = {
+        id: '1',
+        title: 'New title',
+        content: 'New content',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      prisma.prompt.update.mockResolvedValue(input);
+
+      const result = await repository.update(input.id, {
+        title: input.title,
+        content: input.content,
+      });
+
+      expect(prisma.prompt.update).toHaveBeenCalledWith({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.title,
+          content: input.content,
+        },
+      });
+
+      expect(result).toEqual(input);
+    });
+
+    it('should be able to update only with new title', async () => {
+      const now = new Date();
+      const input = {
+        id: '1',
+        title: 'New title',
+        content: '',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      prisma.prompt.update.mockResolvedValue(input);
+
+      await repository.update(input.id, {
+        title: input.title,
+      });
+      const call = prisma.prompt.update.mock.calls[0][0];
+
+      expect(call.where).toEqual({ id: input.id });
+      expect(call.data).toEqual({ title: input.title });
+      expect('content' in call.data).toBe(false);
+    });
+
+    it('should be able to update only with new content', async () => {
+      const now = new Date();
+      const input = {
+        id: '1',
+        title: '',
+        content: 'New content',
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      prisma.prompt.update.mockResolvedValue(input);
+
+      await repository.update(input.id, {
+        content: input.content,
+      });
+      const call = prisma.prompt.update.mock.calls[0][0];
+
+      expect(call.where).toEqual({ id: input.id });
+      expect(call.data).toEqual({ content: input.content });
+      expect('title' in call.data).toBe(false);
+    });
+  });
+
+  describe('delete', () => {
+    it('should be able to call prisma.prompt.delete whith where using id', async () => {
+      const promptId = '1';
+      await repository.delete(promptId);
+
+      expect(prisma.prompt.delete).toHaveBeenCalledWith({
+        where: { id: promptId },
+      });
     });
   });
 });
