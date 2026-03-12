@@ -9,7 +9,8 @@ import {
   Menu,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import {
   startTransition,
   useActionState,
@@ -17,6 +18,7 @@ import {
   useRef,
   useState,
 } from 'react';
+
 import { searchPromptAction } from '@/app/actions/prompt.actions';
 import { Logo } from '@/components/logo';
 import { PromptList } from '@/components/prompts';
@@ -33,8 +35,6 @@ const fadeTransition = { duration: 0.2, delay: 0.1 };
 
 export const SidebarContent = ({ prompts }: SidebarContentProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const [searchState, searchAction, isPending] = useActionState(
@@ -47,7 +47,7 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const [query, setQuery] = useQueryState('q', { defaultValue: '' });
 
   const hasQuery = query.trim().length > 0;
   const promptList = hasQuery ? (searchState.prompts ?? prompts) : prompts;
@@ -75,14 +75,14 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
     setQuery(newQuery);
 
     startTransition(() => {
-      const url = newQuery ? `/?q=${encodeURIComponent(newQuery)}` : '/';
-      router.push(url, { scroll: false });
       formRef.current?.requestSubmit();
     });
   }
 
   useEffect(() => {
-    if (!hasQuery) return;
+    if (!hasQuery) {
+      return;
+    }
     formRef.current?.requestSubmit();
   }, [hasQuery]);
 
@@ -99,7 +99,7 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
         <Menu className="h-5 w-5 text-gray-100" />
       </Button>
       <motion.aside
-        className={`fixed top-0 left-0 z-50 flex h-full w-[80vw] flex-col border-gray-700 border-r bg-gray-800 transition-[transform,width] duration-300 ease-in-out sm:w-[320px] md:relative md:z-auto ${isCollapsed ? 'md:w-[72px]' : 'md:w-[384px]'} ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+        className={`fixed top-0 left-0 z-50 flex h-full w-[80vw] flex-col border-gray-700 border-r bg-gray-800 transition-[transform,width] duration-300 ease-in-out sm:w-[320px] md:relative md:z-auto ${isCollapsed ? 'md:w-18' : 'md:w-[384px]'} ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
         initial={false}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >

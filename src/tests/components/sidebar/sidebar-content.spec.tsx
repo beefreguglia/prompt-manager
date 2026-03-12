@@ -1,15 +1,29 @@
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { SidebarContent, type SidebarContentProps } from '@/components/sidebar';
 import { render, screen, waitFor } from '@/lib/test-utils';
 
 const pushMock = jest.fn();
 let searchParamsMock = new URLSearchParams();
-
+const setQueryMock = jest.fn();
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: pushMock,
   }),
   useSearchParams: () => searchParamsMock,
+}));
+
+jest.mock('nuqs', () => ({
+  useQueryState: (key: string) => {
+    const [value, setValue] = useState(searchParamsMock.get(key) ?? '');
+
+    function setQuery(nextValue: string) {
+      setQueryMock(nextValue);
+      setValue(nextValue);
+    }
+
+    return [value, setQuery] as const;
+  },
 }));
 
 const initialPrompts = [
@@ -183,13 +197,13 @@ describe('Sidebar Content', () => {
       const searchInput = screen.getByPlaceholderText('Buscar prompts...');
       await user.type(searchInput, text);
 
-      expect(pushMock).toHaveBeenCalled();
-      const lastCall = pushMock.mock.calls.at(-1);
-      expect(lastCall?.[0]).toBe('/?q=A%20B');
+      expect(setQueryMock).toHaveBeenCalled();
+      const lastCall = setQueryMock.mock.calls.at(-1);
+      expect(lastCall?.[0]).toBe(text);
 
       await user.clear(searchInput);
-      const lastClearCall = pushMock.mock.calls.at(-1);
-      expect(lastClearCall?.[0]).toBe('/');
+      const lastClearCall = setQueryMock.mock.calls.at(-1);
+      expect(lastClearCall?.[0]).toBe('');
     });
 
     it('should submit the form when typing in the search field', async () => {
