@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { unknown } from 'zod/v3';
 import {
   createPromptAction,
@@ -7,6 +8,10 @@ import {
 } from '@/app/actions/prompt.actions';
 
 jest.mock('@/lib/prisma', () => ({ prisma: {} }));
+
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+}));
 
 const mockedSearchExecute = jest.fn();
 const mockedCreateExecute = jest.fn();
@@ -43,6 +48,55 @@ describe('Server Actions: Prompts', () => {
     mockedCreateExecute.mockReset();
     mockedUpdateExecute.mockReset();
     mockedDeleteExecute.mockReset();
+    (revalidatePath as jest.Mock).mockReset();
+  });
+
+  describe('createPromptAction', () => {
+    it('should be able to create a prompt', async () => {
+      mockedCreateExecute.mockResolvedValue(undefined);
+      const data = { title: 'Title', content: 'Content' };
+      const result = await createPromptAction(data);
+
+      expect(result?.success).toBe(true);
+      expect(result?.message).toBe('Prompt criado com sucesso');
+      expect(revalidatePath as jest.Mock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should be able to return validation error when form fields empty', async () => {
+      const data = {
+        title: '',
+        content: '',
+      };
+
+      const result = await createPromptAction(data);
+
+      expect(result?.success).toBe(false);
+      expect(result?.message).toBe('Erro de validação');
+      expect(result?.errors).toBeDefined();
+    });
+
+    it('should be able to return PROMPT_ALREADY_EXISTS error when when happen', async () => {
+      mockedCreateExecute.mockRejectedValue(new Error('PROMPT_ALREADY_EXISTS'));
+      const data = {
+        title: 'duplicado',
+        content: 'duplicado',
+      };
+
+      const result = await createPromptAction(data);
+
+      expect(result?.success).toBe(false);
+      expect(result?.message).toBe('Este prompt já existe');
+    });
+
+    it('should be able to return a generic error when create action fails', async () => {
+      mockedCreateExecute.mockRejectedValue(unknown);
+      const data = { title: 'title', content: 'content' };
+
+      const result = await createPromptAction(data);
+
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('Falha ao criar o prompt');
+    });
   });
 
   describe('searchPromptAction', () => {
@@ -122,53 +176,6 @@ describe('Server Actions: Prompts', () => {
     });
   });
 
-  describe('createPromptAction', () => {
-    it('should be able to create a prompt', async () => {
-      mockedCreateExecute.mockResolvedValue(undefined);
-      const data = { title: 'Title', content: 'Content' };
-      const result = await createPromptAction(data);
-
-      expect(result?.success).toBe(true);
-      expect(result?.message).toBe('Prompt criado com sucesso');
-    });
-
-    it('should be able to return validation error when form fields empty', async () => {
-      const data = {
-        title: '',
-        content: '',
-      };
-
-      const result = await createPromptAction(data);
-
-      expect(result?.success).toBe(false);
-      expect(result?.message).toBe('Erro de validação');
-      expect(result?.errors).toBeDefined();
-    });
-
-    it('should be able to return PROMPT_ALREADY_EXISTS error when when happen', async () => {
-      mockedCreateExecute.mockRejectedValue(new Error('PROMPT_ALREADY_EXISTS'));
-      const data = {
-        title: 'duplicado',
-        content: 'duplicado',
-      };
-
-      const result = await createPromptAction(data);
-
-      expect(result?.success).toBe(false);
-      expect(result?.message).toBe('Este prompt já existe');
-    });
-
-    it('should be able to return a generic error when create action fails', async () => {
-      mockedCreateExecute.mockRejectedValue(unknown);
-      const data = { title: 'title', content: 'content' };
-
-      const result = await createPromptAction(data);
-
-      expect(result.success).toBe(false);
-      expect(result.message).toBe('Falha ao criar o prompt');
-    });
-  });
-
   describe('updatePromptAction', () => {
     it('should be able to update a prompt successfuly', async () => {
       mockedUpdateExecute.mockResolvedValue({});
@@ -185,6 +192,7 @@ describe('Server Actions: Prompts', () => {
         success: true,
         message: 'Prompt atualizado com sucesso',
       });
+      expect(revalidatePath as jest.Mock).toHaveBeenCalledTimes(1);
     });
 
     it('should be able to return validation error when fields are empty', async () => {
@@ -241,6 +249,7 @@ describe('Server Actions: Prompts', () => {
 
       expect(result.success).toBe(true);
       expect(result.message).toBe('Prompt removido com sucesso');
+      expect(revalidatePath as jest.Mock).toHaveBeenCalledTimes(1);
     });
 
     it('should be able to return error when id is empty', async () => {

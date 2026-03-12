@@ -10,4 +10,8 @@ if (!(globalThis as any).crypto) {
   (globalThis as any).crypto = webcrypto;
 }
 
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+}));
+
 expect.extend({});
