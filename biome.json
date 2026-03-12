@@ -12,7 +12,8 @@
       "e2e/**/*",
       "!src/generated/prisma/**/*",
       "jest.config.ts",
-      "jest.setup.ts"
+      "jest.setup.ts",
+      "README.md"
     ]
   },
   "formatter": {

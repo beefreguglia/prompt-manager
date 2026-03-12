@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Prompt Manager
 
-## Getting Started
+> Um gerenciador de prompts, construído para aprender e treinar arquiteturas de software no ecossistema React/Next.
 
-First, run the development server:
+![Interface do Prompt Manager](./public/screenshot.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📖 Sobre o Projeto
+
+O **Prompt Manager** nasceu para gerenciar prompts de IA no dia a dia. Este projeto foi desenvolvido para aplicar e validar conceitos de engenharia de software, fugindo do acoplamento padrão encontrado em muitas aplicações web.
+
+### 🎯 Objetivos
+
+- **Clean Architecture & DDD:** Separação entre regras de negócio (Core/Domain), casos de uso e detalhes de implementação (Framework/UI).
+- **Princípios SOLID:** Garantindo um código extensível, testável e de fácil manutenção.
+- **Testes Automatizados:** Cobertura envolvendo testes unitários, de integração e ponta a ponta (E2E).
+- **CI/CD:** Pipelines automatizados garantindo a qualidade a cada novo commit.
+
+## 🛠 Tecnologias Utilizadas
+
+**Frontend:**
+
+- [Next.js 16 (App Router)](https://nextjs.org/) - Framework React
+- [TypeScript](https://www.typescriptlang.org/) - Tipagem estática
+- [Tailwind CSS 4](https://tailwindcss.com/) & Shadcn-ui - Estilização e componentes acessíveis
+- [Framer Motion](https://www.framer.com/motion/) - Animações fluidas
+- [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/) - Gerenciamento e validação de formulários
+- Nuqs - Gerenciamento de estado na URL
+
+**Backend & Banco de Dados:**
+
+- [Prisma ORM](https://www.prisma.io/) - Mapeamento objeto-relacional
+- [PostgreSQL](https://www.postgresql.org/) - Banco de dados relacional
+
+**Qualidade de Código & Tooling:**
+
+- [Biome](https://biomejs.dev/) - Linter e Formatter super-rápido
+- [Lefthook](https://github.com/evilmartians/lefthook) - Gerenciador de Git Hooks
+- [Faker.js](https://fakerjs.dev/) - Geração de dados (mock/seed)
+
+### 3. Arquitetura e Estrutura do Projeto
+
+Para garantir manutenibilidade e escalabilidade, o projeto foge do acoplamento tradicional do Next.js e adota conceitos de **Clean Architecture** e **DDD (Domain-Driven Design)**. A lógica de negócios é totalmente isolada do framework de UI e do banco de dados.
+
+A estrutura de diretórios foi pensada da seguinte forma:
+
+```text
+├── e2e/                    # Testes de Ponta a Ponta (Playwright)
+├── prisma/                 # Schema do banco de dados e migrações
+├── public/                 # Arquivos estáticos
+├── src/
+│   ├── app/                # Next.js App Router (Rotas, Layouts e Server Actions)
+│   ├── components/         # Componentes React reutilizáveis de UI
+│   ├── core/               # Coração da aplicação: Casos de Uso e Entidades (Agnóstico a framework)
+│   ├── infra/repository/   # Implementações técnicas e persistência (Adapters do Prisma)
+│   ├── lib/                # Configurações gerais e utilitários (ex: Prisma Client)
+│   └── styles/             # Estilos globais (Tailwind CSS)
+└── tests/                  # Testes Unitários e de Integração (Jest)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Como Executar o Projeto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Pré-requisitos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Node.js](https://nodejs.org/) (v20 ou superior)
+- [PostgreSQL](https://www.postgresql.org/) (docker-compose.yml presente no projeto)
 
-## Learn More
+### Passo a Passo
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone o repositório:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+    git clone [https://github.com/beefreguglia/prompt-manager.git](https://github.com/beefreguglia/prompt-manager.git)
+    cd prompt-manager
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Instale as dependências:**
 
-## Deploy on Vercel
+```bash
+    pnpm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Configure as variáveis de ambiente:**
+   Crie um arquivo .env na raiz do projeto baseado no arquivo de exemplo (se houver) ou adicione a sua connection string do banco:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```Fragmento do código
+    DATABASE_URL="postgresql://user:password@localhost:5432/prompt_manager?schema=public"
+```
+
+4. **Prepare o Banco de Dados (Prisma):**
+   Gere o client do Prisma, rode as migrações e popule o banco com dados com o seed:
+
+```Bash
+    npm run db:generate
+    npm run db:migrate
+    npm run db:seed
+```
