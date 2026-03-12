@@ -48,7 +48,7 @@ jobs:
               run: pnpm lint
 
             - name: Checagem de Tipagem (Typecheck)
-              run: pnpm typecheck
+              run: pnpm validate:typecheck
 
             - name: Rodar Testes de Unidade
               run: pnpm test:coverage
