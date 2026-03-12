@@ -69,7 +69,7 @@ A estrutura de diretórios foi pensada da seguinte forma:
 1. **Clone o repositório:**
 
 ```bash
-    git clone [https://github.com/beefreguglia/prompt-manager.git](https://github.com/beefreguglia/prompt-manager.git)
+    git clone https://github.com/beefreguglia/prompt-manager.git
     cd prompt-manager
 ```
 
@@ -90,7 +90,15 @@ A estrutura de diretórios foi pensada da seguinte forma:
    Gere o client do Prisma, rode as migrações e popule o banco com dados com o seed:
 
 ```Bash
-    npm run db:generate
-    npm run db:migrate
-    npm run db:seed
+    pnpm run db:generate
+    pnpm run db:migrate
+    pnpm run db:seed
+```
+
+4. **Inicie o servidor de desenvolvimento:**
+
+```Bash
+    pnpm run db:generate
+    pnpm run db:migrate
+    pnpm run db:seed
 ```

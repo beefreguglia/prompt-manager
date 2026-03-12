@@ -13,7 +13,7 @@
       "!src/generated/prisma/**/*",
       "jest.config.ts",
       "jest.setup.ts",
-      "README.md"
+      "*.md"
     ]
   },
   "formatter": {
