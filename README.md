@@ -44,12 +44,12 @@ Para garantir manutenibilidade e escalabilidade, o projeto foge do acoplamento t
 A estrutura de diretórios foi pensada da seguinte forma:
 
 ```text
-├── e2e/                    # Testes de Ponta a Ponta (Playwright)
-├── prisma/                 # Schema do banco de dados e migrações
+├── e2e/                    # Testes de End to End (Playwright)
+├── prisma/                 # Schema do banco de dados e migrations
 ├── public/                 # Arquivos estáticos
 ├── src/
 │   ├── app/                # Next.js App Router (Rotas, Layouts e Server Actions)
-│   ├── components/         # Componentes React reutilizáveis de UI
+│   ├── components/         # Componentes reutilizáveis de UI
 │   ├── core/               # Coração da aplicação: Casos de Uso e Entidades (Agnóstico a framework)
 │   ├── infra/repository/   # Implementações técnicas e persistência (Adapters do Prisma)
 │   ├── lib/                # Configurações gerais e utilitários (ex: Prisma Client)
